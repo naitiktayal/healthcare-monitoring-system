@@ -6,6 +6,7 @@ import com.naitik.healthcaremonitoringsystem.mapper.PatientMapper;
 import com.naitik.healthcaremonitoringsystem.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.naitik.healthcaremonitoringsystem.exception.ResourceNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,10 +34,13 @@ public class PatientService {
 
     // Get Patient By Id
     public PatientDTO getPatientById(Long id) {
-        Patient patient = patientRepository.findById(id).orElse(null);
-        return patient != null ? PatientMapper.toDTO(patient) : null;
-    }
 
+        Patient patient = patientRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Patient not found with ID: " + id));
+
+        return PatientMapper.toDTO(patient);
+    }
     // Delete Patient
     public void deletePatient(Long id) {
         patientRepository.deleteById(id);
