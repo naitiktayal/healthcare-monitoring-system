@@ -20,16 +20,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
-    private final AppointmentMapper appointmentMapper;
 
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
                                   PatientRepository patientRepository,
-                                  DoctorRepository doctorRepository,
-                                  AppointmentMapper appointmentMapper) {
+                                  DoctorRepository doctorRepository) {
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
         this.doctorRepository = doctorRepository;
-        this.appointmentMapper = appointmentMapper;
     }
 
     @Override
@@ -45,20 +42,21 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(dto.getAppointmentDate());
+        appointment.setAppointmentTime(dto.getAppointmentTime());
         appointment.setStatus(dto.getStatus());
         appointment.setPatient(patient);
         appointment.setDoctor(doctor);
 
         Appointment saved = appointmentRepository.save(appointment);
 
-        return appointmentMapper.toDTO(saved);
+        return AppointmentMapper.toDTO(saved);
     }
 
     @Override
     public List<AppointmentDTO> getAllAppointments() {
         return appointmentRepository.findAll()
                 .stream()
-                .map(appointmentMapper::toDTO)
+                .map(AppointmentMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -68,7 +66,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Appointment not found"));
 
-        return appointmentMapper.toDTO(appointment);
+        return AppointmentMapper.toDTO(appointment);
     }
 
     @Override

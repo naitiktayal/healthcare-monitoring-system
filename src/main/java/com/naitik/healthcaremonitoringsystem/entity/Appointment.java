@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -18,6 +19,8 @@ public class Appointment {
     private Long id;
 
     private LocalDate appointmentDate;
+
+    private LocalTime appointmentTime;
 
     private String status;
 
