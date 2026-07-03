@@ -24,6 +24,10 @@ public class PatientController {
     public List<PatientDTO> getAllPatients() {
         return patientService.getAllPatients();
     }
+    @GetMapping("/test")
+    public String patientTest() {
+        return "Patient Access Success";
+    }
 
     @GetMapping("/{id}")
     public PatientDTO getPatientById(@PathVariable Long id) {

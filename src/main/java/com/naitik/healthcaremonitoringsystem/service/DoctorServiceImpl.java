@@ -7,7 +7,9 @@ import com.naitik.healthcaremonitoringsystem.exception.ResourceNotFoundException
 import com.naitik.healthcaremonitoringsystem.mapper.DoctorMapper;
 import com.naitik.healthcaremonitoringsystem.repository.DoctorRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,4 +72,29 @@ public class DoctorServiceImpl implements DoctorService {
 
         doctorRepository.delete(doctor);
     }
+    @Override
+    public Page<DoctorDTO> getDoctors(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return doctorRepository.findAll(pageable)
+                .map(DoctorMapper::toDTO);
+    }
+    @Override
+    public Page<DoctorDTO> searchDoctorsByName(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return doctorRepository
+                .findByDoctorNameContainingIgnoreCase(name, pageable)
+                .map(DoctorMapper::toDTO);
+    }
+
+    @Override
+    public Page<DoctorDTO> searchDoctorsBySpecialization(String specialization, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return doctorRepository
+                .findBySpecializationContainingIgnoreCase(specialization, pageable)
+                .map(DoctorMapper::toDTO);
+    }
+
 }
