@@ -71,9 +71,29 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public AppointmentDTO updateAppointment(Long id, AppointmentDTO dto) {
-        throw new UnsupportedOperationException("Will implement next");
-    }
 
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Appointment not found"));
+
+        Patient patient = patientRepository.findById(dto.getPatientId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Patient not found"));
+
+        Doctor doctor = doctorRepository.findById(dto.getDoctorId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Doctor not found"));
+
+        appointment.setAppointmentDate(dto.getAppointmentDate());
+        appointment.setAppointmentTime(dto.getAppointmentTime());
+        appointment.setStatus(dto.getStatus());
+        appointment.setPatient(patient);
+        appointment.setDoctor(doctor);
+
+        Appointment updated = appointmentRepository.save(appointment);
+
+        return AppointmentMapper.toDTO(updated);
+    }
     @Override
     public void deleteAppointment(Long id) {
         appointmentRepository.deleteById(id);
