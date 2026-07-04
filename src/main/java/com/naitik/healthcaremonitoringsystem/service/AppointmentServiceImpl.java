@@ -11,6 +11,7 @@ import com.naitik.healthcaremonitoringsystem.repository.DoctorRepository;
 import com.naitik.healthcaremonitoringsystem.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -114,4 +115,43 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void deleteAppointment(Long id) {
         appointmentRepository.deleteById(id);
     }
+
+
+    @Override
+    public AppointmentDTO updateAppointmentStatus(Long id, String status) {
+
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Appointment not found"));
+
+        appointment.setStatus(status);
+
+        Appointment updatedAppointment =
+                appointmentRepository.save(appointment);
+
+        return AppointmentMapper.toDTO(updatedAppointment);
+    }
+
+    @Override
+    public List<AppointmentDTO> getUpcomingAppointments() {
+
+        LocalDate today = LocalDate.now();
+
+        return appointmentRepository
+                .findByAppointmentDateGreaterThanEqualOrderByAppointmentDateAsc(today)
+                .stream()
+                .map(AppointmentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<AppointmentDTO> getTodayAppointments() {
+        LocalDate today = LocalDate.now();
+
+        return appointmentRepository
+                .findByAppointmentDate(today)
+                .stream()
+                .map(AppointmentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
 }

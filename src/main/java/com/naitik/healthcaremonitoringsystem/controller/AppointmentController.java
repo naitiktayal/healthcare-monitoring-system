@@ -4,6 +4,8 @@ import com.naitik.healthcaremonitoringsystem.dto.AppointmentDTO;
 import com.naitik.healthcaremonitoringsystem.service.AppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
+
 
 import java.util.List;
 
@@ -52,6 +54,35 @@ public class AppointmentController {
             @Valid @RequestBody AppointmentDTO dto) {
 
         return appointmentService.updateAppointment(id, dto);
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<AppointmentDTO> updateAppointmentStatus(
+            @PathVariable Long id,
+            @RequestParam String status) {
+
+        AppointmentDTO updatedAppointment =
+                appointmentService.updateAppointmentStatus(id, status);
+
+        return ResponseEntity.ok(updatedAppointment);
+    }
+
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<AppointmentDTO>> getUpcomingAppointments() {
+
+        List<AppointmentDTO> appointments =
+                appointmentService.getUpcomingAppointments();
+
+        return ResponseEntity.ok(appointments);
+    }
+
+    @GetMapping("/today")
+    public ResponseEntity<List<AppointmentDTO>> getTodayAppointments() {
+
+        List<AppointmentDTO> appointments =
+                appointmentService.getTodayAppointments();
+
+        return ResponseEntity.ok(appointments);
     }
 
     @DeleteMapping("/{id}")
