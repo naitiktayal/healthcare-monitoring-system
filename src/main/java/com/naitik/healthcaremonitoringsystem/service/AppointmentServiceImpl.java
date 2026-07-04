@@ -61,6 +61,22 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public List<AppointmentDTO> getAppointmentsByDoctorId(Long doctorId) {
+        return appointmentRepository.findByDoctorId(doctorId)
+                .stream()
+                .map(AppointmentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AppointmentDTO> getAppointmentsByPatientId(Long patientId) {
+        return appointmentRepository.findByPatientId(patientId)
+                .stream()
+                .map(AppointmentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public AppointmentDTO getAppointmentById(Long id) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() ->

@@ -32,6 +32,20 @@ public class AppointmentController {
         return appointmentService.getAppointmentById(id);
     }
 
+    @GetMapping("/doctor/{doctorId}")
+    public List<AppointmentDTO> getAppointmentsByDoctorId(
+            @PathVariable Long doctorId) {
+
+        return appointmentService.getAppointmentsByDoctorId(doctorId);
+    }
+
+    @GetMapping("/patient/{patientId}")
+    public List<AppointmentDTO> getAppointmentsByPatientId(
+            @PathVariable Long patientId) {
+
+        return appointmentService.getAppointmentsByPatientId(patientId);
+    }
+
     @PutMapping("/{id}")
     public AppointmentDTO updateAppointment(
             @PathVariable Long id,
