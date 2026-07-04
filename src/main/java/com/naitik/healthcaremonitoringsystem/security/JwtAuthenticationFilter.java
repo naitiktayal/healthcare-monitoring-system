@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
+import java.time.LocalDateTime;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,7 +47,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
             System.out.println("Token: " + token);
 
-            String username = jwtService.extractUsername(token);
+            String username;
+
+            try {
+                username = jwtService.extractUsername(token);
+            } catch (ExpiredJwtException ex) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+
+                response.getWriter().write(
+                        "{\"status\":401," +
+                                "\"error\":\"Unauthorized\"," +
+                                "\"message\":\"JWT token has expired\"," +
+                                "\"timestamp\":\"" + LocalDateTime.now() + "\"}"
+                );
+                return;
+            } catch (JwtException ex) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+
+                response.getWriter().write(
+                        "{\"status\":401," +
+                                "\"error\":\"Unauthorized\"," +
+                                "\"message\":\"Invalid JWT token\"," +
+                                "\"timestamp\":\"" + LocalDateTime.now() + "\"}"
+                );
+                return;
+            }
             System.out.println("Username: " + username);
 
             if (username != null &&
