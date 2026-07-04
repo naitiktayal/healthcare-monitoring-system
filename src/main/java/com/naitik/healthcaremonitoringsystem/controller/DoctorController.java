@@ -48,12 +48,21 @@ public class DoctorController {
     public void deleteDoctor(@PathVariable Long id) {
         doctorService.deleteDoctor(id);
     }
+
+
     @GetMapping("/page")
     public Page<DoctorDTO> getDoctors(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size) {
-
-        return doctorService.getDoctors(page, size);
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        return doctorService.getDoctors(
+                page,
+                size,
+                sortBy,
+                sortDir
+        );
     }
 
     @GetMapping("/search/name")

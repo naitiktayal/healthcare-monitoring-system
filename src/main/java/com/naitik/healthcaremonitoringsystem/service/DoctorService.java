@@ -16,7 +16,12 @@ public interface DoctorService {
 
     void deleteDoctor(Long id);
 
-    Page<DoctorDTO> getDoctors(int page, int size);
+    Page<DoctorDTO> getDoctors(
+            int page,
+            int size,
+            String sortBy,
+            String sortDir
+    );
 
     Page<DoctorDTO> searchDoctorsByName(String name, int page, int size);
 

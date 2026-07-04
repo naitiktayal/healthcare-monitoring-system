@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Sort;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
@@ -73,12 +74,22 @@ public class DoctorServiceImpl implements DoctorService {
         doctorRepository.delete(doctor);
     }
     @Override
-    public Page<DoctorDTO> getDoctors(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<DoctorDTO> getDoctors(
+            int page,
+            int size,
+            String sortBy,
+            String sortDir
+    ) {
+        Sort sort = sortDir.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
 
         return doctorRepository.findAll(pageable)
                 .map(DoctorMapper::toDTO);
     }
+
     @Override
     public Page<DoctorDTO> searchDoctorsByName(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
