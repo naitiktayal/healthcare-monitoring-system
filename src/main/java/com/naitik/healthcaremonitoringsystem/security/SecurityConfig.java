@@ -32,14 +32,13 @@ public class SecurityConfig {
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
-                        .requestMatchers("/doctor/**").hasRole("DOCTOR")
+                        .requestMatchers("/doctors/**").hasRole("DOCTOR")
 
-                        .requestMatchers("/patient/**").hasRole("PATIENT")
+                        .requestMatchers("/patients/**").hasRole("PATIENT")
 
                         .anyRequest().authenticated()
 
-                )
-                .httpBasic(Customizer.withDefaults());
+                );
         http.addFilterBefore(jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class);
         return http.build();
