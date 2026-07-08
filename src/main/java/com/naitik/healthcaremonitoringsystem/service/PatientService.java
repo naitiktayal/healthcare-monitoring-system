@@ -10,6 +10,10 @@ import com.naitik.healthcaremonitoringsystem.exception.ResourceNotFoundException
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 
 @Service
 public class PatientService {
@@ -44,5 +48,50 @@ public class PatientService {
     // Delete Patient
     public void deletePatient(Long id) {
         patientRepository.deleteById(id);
+    }
+
+    // Get Patients with Pagination and Sorting
+    public Page<PatientDTO> getPatients(
+            int page,
+            int size,
+            String sortBy,
+            String sortDir) {
+
+        Sort sort = sortDir.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return patientRepository.findAll(pageable)
+                .map(PatientMapper::toDTO);
+    }
+
+
+    // Search Patients By Full Name
+    public Page<PatientDTO> searchPatientsByName(
+            String name,
+            int page,
+            int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return patientRepository
+                .findByFullNameContainingIgnoreCase(name, pageable)
+                .map(PatientMapper::toDTO);
+    }
+
+
+    // Search Patients By Blood Group
+    public Page<PatientDTO> searchPatientsByBloodGroup(
+            String bloodGroup,
+            int page,
+            int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return patientRepository
+                .findByBloodGroupContainingIgnoreCase(bloodGroup, pageable)
+                .map(PatientMapper::toDTO);
     }
 }
